@@ -97,12 +97,22 @@ define(
                 emitter.on('x', handler);
                 emitter.emit('x');
                 expect(handler).toHaveBeenCalledWith();
+                // off失败
                 emitter.off('x', function () {});
-                emitter.emit('x');
-                expect(handler).toHaveBeenCalledWith();
+                // 因此应该还可以emit
+                emitter.emit('x', 2);
+                expect(handler).toHaveBeenCalledWith(2);
+                // off成功
                 emitter.off('x', handler);
+                // 现在设置maxListeners为2，则应该只能添加两个
+                // 证明上面那个handler已经成功卸载
+                emitter.setMaxListeners(2);
+                emitter.on('x', handler);
                 expect(function () {
-                    emitter.emit('x');
+                    emitter.on('x', handler);
+                }).not.toThrow();
+                expect(function () {
+                    emitter.on('x', handler);
                 }).toThrow();
             });
         });
