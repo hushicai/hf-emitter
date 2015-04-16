@@ -1,0 +1,22 @@
+{
+  "name": "hf-emitter",
+  "version": "1.0.0",
+  "homepage": "https://github.com/hushicai/hf-emitter",
+  "authors": [
+    "hushicai <bluthcy@gmail.com>"
+  ],
+  "main": "index.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "dep",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "hf-type": "*",
+    "hf-util": "*"
+  }
+}
