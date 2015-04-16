@@ -16,10 +16,6 @@ define(
         }
 
         Emitter.prototype.setMaxListeners = function (n) {
-            var isNumber = require('hf-type/isNumber');
-            if (!isNumber(n) || n < 0 || isNaN(n)) {
-                throw new TypeError('n must be a positive number.');
-            }
             this._maxListeners = n;
             return this;
         };
@@ -33,14 +29,9 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.on = function (type, listener) {
-            if (!type || !listener) {
-                throw new Error('not enough arguments');
-            }
             this._events = this._events || {};
             this._events[type] = this._events[type] || [];
-
             var events = this._events[type];
-
             var num = events.length;
 
             if (num >= this._maxListeners) {
@@ -61,22 +52,14 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.off = function (type, listener) {
-            if (!this._events) {
-                return this;
-            }
-
             // 释放所有事件
             if (!type) {
                 this._events = undefined;
                 return this;
             }
 
-            if (!this._events[type]) {
-                return this;
-            }
-
             if (!listener) {
-                this._events[type] = undefined;
+                delete this._events[type];
                 return this;
             }
 
@@ -100,17 +83,6 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.emit = function (type) {
-            if (!type) {
-                throw new Error('type arguments required');
-            }
-            if (!this._events) {
-                return this;
-            }
-
-            if (!this._events[type]) {
-                return this;
-            }
-
             var list = this._events[type];
 
             var temp = list.slice();

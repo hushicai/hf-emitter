@@ -26,13 +26,6 @@ define(
                 expect(emitter.off).toBeDefined();
                 expect(emitter.emit).toBeDefined();
             });
-            it('setMaxListeners called with a illegal number should throw type error', function () {
-                expect(function () {
-                    emitter.setMaxListeners('n');
-                }).toThrow(
-                    new TypeError('n must be a positive number.')
-                );
-            });
             it('setMaxListeners should limit events count', function () {
                 emitter.setMaxListeners(5);
                 emitter.on('x', empty);
@@ -44,18 +37,6 @@ define(
                     emitter.on('x', empty);
                 }).toThrowError(
                     'warning: possible memory leak detected. 5 listeners added.'
-                );
-            });
-            it('on called with enough arguments should throw error', function () {
-                expect(function () {
-                    emitter.on();
-                }).toThrow(
-                    new Error('not enough arguments')
-                );
-                expect(function () {
-                    emitter.on('x');
-                }).toThrow(
-                    new Error('not enough arguments')
                 );
             });
             it('on', function () {
@@ -80,37 +61,49 @@ define(
                     new RangeError('warning: possible memory leak detected. 10 listeners added.')
                 );
             });
-            it('off when no events', function () {
-                emitter.off();
-            }),
+            it('emit', function () {
+                var log = jasmine.createSpy('log');
+                emitter.on('x', log);
+                emitter.emit('x');
+                expect(log).toHaveBeenCalledWith();
+                emitter.emit('x', 2);
+                expect(log).toHaveBeenCalledWith(2);
+            });
             it('off all events', function () {
                 emitter.on('x1', empty);
                 emitter.on('x2', empty);
                 emitter.on('x3', empty);
                 emitter.off();
+                expect(function () {
+                    emitter.emit('x1');
+                    emitter.emit('x2');
+                    emitter.emit('x3');
+                }).toThrow();
             });
             it('off with event type', function () {
-                emitter.on('x', empty);
-                emitter.off('x1');
+                var handler = jasmine.createSpy('handler');
+                emitter.on('x', handler);
+                emitter.emit('x');
+                expect(handler).toHaveBeenCalledWith();
+                emitter.emit('x', 1);
+                expect(handler).toHaveBeenCalledWith(1);
                 emitter.off('x');
+                expect(function () {
+                    emitter.emit('x');
+                }).toThrow();
             });
             it('off with event type and listener', function () {
-                emitter.on('x', empty);
+                var handler = jasmine.createSpy('handler');
+                emitter.on('x', handler);
+                emitter.emit('x');
+                expect(handler).toHaveBeenCalledWith();
                 emitter.off('x', function () {});
-                emitter.off('x', empty);
-            });
-            it('emit', function () {
-                var log = jasmine.createSpy('log');
+                emitter.emit('x');
+                expect(handler).toHaveBeenCalledWith();
+                emitter.off('x', handler);
                 expect(function () {
-                    emitter.emit();
-                }).toThrowError('type arguments required');
-                emitter.emit('x');
-                emitter.on('x', log);
-                emitter.emit('x1');
-                emitter.emit('x');
-                expect(log).toHaveBeenCalledWith();
-                emitter.emit('x', 2);
-                expect(log).toHaveBeenCalledWith(2);
+                    emitter.emit('x');
+                }).toThrow();
             });
         });
     }
