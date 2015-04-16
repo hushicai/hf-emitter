@@ -34,7 +34,7 @@ define(
          */
         Emitter.prototype.on = function (type, listener) {
             if (!type || !listener) {
-                throw new Error('not enough arguments')
+                throw new Error('not enough arguments');
             }
             this._events = this._events || {};
             this._events[type] = this._events[type] || [];
@@ -100,12 +100,18 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.emit = function (type) {
-            this._events = this._events || {};
-            var list = this._events[type];
-
-            if (!list || !list.length) {
+            if (!type) {
+                throw new Error('type arguments required');
+            }
+            if (!this._events) {
                 return this;
             }
+
+            if (!this._events[type]) {
+                return this;
+            }
+
+            var list = this._events[type];
 
             var temp = list.slice();
             var args = [].slice.call(arguments, 1);
