@@ -84,7 +84,9 @@ define(
          */
         Emitter.prototype.emit = function (type) {
             var list = this._events[type];
-
+            if (!list || list.length === 0) {
+                return this;
+            }
             var temp = list.slice();
             var args = [].slice.call(arguments, 1);
             for (var i = list.length - 1; i >= 0; i--) {
