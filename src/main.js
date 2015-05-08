@@ -11,7 +11,7 @@ define(
          * @constructor
          */
         function Emitter() {
-            this._events = undefined;
+            this._events = {};
             this._maxListeners = 10;
         }
 
@@ -29,7 +29,6 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.on = function (type, listener) {
-            this._events = this._events || {};
             this._events[type] = this._events[type] || [];
             var events = this._events[type];
             var num = events.length;
@@ -54,7 +53,7 @@ define(
         Emitter.prototype.off = function (type, listener) {
             // 释放所有事件
             if (!type) {
-                this._events = undefined;
+                this._events = {};
                 return this;
             }
 
