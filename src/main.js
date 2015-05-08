@@ -11,7 +11,7 @@ define(
          * @constructor
          */
         function Emitter() {
-            this._events = {};
+            this._events = undefined;
             this._maxListeners = 10;
         }
 
@@ -29,6 +29,7 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.on = function (type, listener) {
+            this._events = this._events || {};
             this._events[type] = this._events[type] || [];
             var events = this._events[type];
             var num = events.length;
@@ -53,7 +54,7 @@ define(
         Emitter.prototype.off = function (type, listener) {
             // 释放所有事件
             if (!type) {
-                this._events = {};
+                this._events = undefined;
                 return this;
             }
 
@@ -82,6 +83,9 @@ define(
          * @return {Emitter}
          */
         Emitter.prototype.emit = function (type) {
+            if (!this._events) {
+                return this;
+            }
             var list = this._events[type];
             if (!list || list.length === 0) {
                 return this;
