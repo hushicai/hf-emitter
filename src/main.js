@@ -99,9 +99,9 @@ define(
             return this;
         };
 
-        Emitter.prototype.mixin = function (obj) {
+        Emitter.mixin = function (obj) {
             var extend = require('hf-util/extend');
-            var proto = this.prototype;
+            var proto = Emitter.prototype;
             return extend(obj, proto);
         };
 
