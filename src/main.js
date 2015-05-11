@@ -99,6 +99,12 @@ define(
             return this;
         };
 
+        Emitter.prototype.mixin = function (obj) {
+            var extend = require('hf-util/extend');
+            var proto = this.prototype;
+            return extend(obj, proto);
+        };
+
         return Emitter;
     }
 );
